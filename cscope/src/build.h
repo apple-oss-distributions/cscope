@@ -1,5 +1,5 @@
 /*===========================================================================
- Copyright (c) 1998-2000, The Santa Cruz Operation 
+ Copyright (c) 2001, The Santa Cruz Operation 
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without
@@ -30,42 +30,44 @@
  DAMAGE. 
  =========================================================================*/
 
-/* $Id: vp.h,v 1.2 2004/07/09 21:34:45 nicolai Exp $ */
+/* $Id$ */
 
-/*
- *	VPATH assumptions:
- *		VPATH is the environment variable containing the view path 
- *		where each path name is followed by ':', '\n', or '\0'.
- *		Embedded blanks are considered part of the path.
- */
 
-#ifndef CSCOPE_VP_H
-#define CSCOPE_VP_H
+#ifndef CSCOPE_BUILD_H
+#define CSCOPE_BUILD_H
 
-#define MAXPATH	200		/* max length for entire name */
+#include "global.h"		/* FIXME: temp. only */
+#include "invlib.h"
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#else
-# define HAVE_FCNTL_H 1		/* in case of doubt, assume it's there */
-#endif
-#ifdef HAVE_FCNTL_H
-# include <fcntl.h>		/* needed for O_... open flags */
-#endif
+/* types and macros of build.c to be used by other modules */
 
-#include <sys/stat.h>
+/* database output macros that update its offset */
+#define	dbputc(c)	(++dboffset, (void) putc(c, newrefs))
+#define	dbfputs(s)	(dboffset += strlen(s), fputs(s, newrefs))
 
-#if !NOMALLOC
-extern	char	**vpdirs;	/* directories (including current) in view path */
-#else
-#define	MAXDIR	25		/* same as libVP */
-#define	DIRLEN	80		/* same as libVP */
-extern	char	vpdirs[MAXDIR][DIRLEN + 1];
-#endif
-extern	int	vpndirs;	/* number of directories in view path */
+/* declarations for globals defined in build.c */
 
-void	vpinit(char *currentdir);
-int	vpopen(char *path, int oflag);
-int	vpaccess(char *path, mode_t amode);
+extern	BOOL	buildonly;	/* only build the database */
+extern	BOOL	unconditional;	/* unconditionally build database */
+extern	BOOL	fileschanged;	/* assume some files changed */
 
-#endif /* CSCOPE_VP_H */
+extern	char	*reffile;	/* cross-reference file path name */
+extern	char	*invname; 	/* inverted index to the database */
+extern	char	*invpost;	/* inverted index postings */
+extern	char	*newreffile;	/* new cross-reference file name */
+extern	FILE	*newrefs;	/* new cross-reference */
+extern	FILE	*postings;	/* new inverted index postings */
+extern	int	symrefs;	/* cross-reference file */
+
+extern	INVCONTROL invcontrol;	/* inverted file control structure */
+
+/* Prototypes of external functions defined by build.c */
+
+void	build(void);
+void	free_newbuildfiles(void);
+void	opendatabase(void);
+void	rebuild(void);
+void	setup_build_filenames(char *reffile);
+void 	seek_to_trailer(FILE *f);
+
+#endif /* CSCOPE_BUILD_H */
