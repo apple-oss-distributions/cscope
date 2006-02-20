@@ -31,7 +31,7 @@
  DAMAGE. 
  =========================================================================*/
 
-/* $Id: egrep.y,v 1.2 2004/07/09 21:34:44 nicolai Exp $ */
+/* $Id: egrep.y,v 1.3 2005/06/10 21:55:48 nicolai Exp $ */
 
 /*
  * egrep -- fine lines containing a regular expression
@@ -605,7 +605,7 @@ done:	(void) fclose(fptr);
 
 /* FIXME HBB: should export this to a separate file and use
  * AC_REPLACE_FUNCS() */
-#if BSD
+#if BSD && !__APPLE__
 /*LINTLIBRARY*/
 /*
  * Set an array of n chars starting at sp to the character c.
