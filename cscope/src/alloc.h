@@ -30,43 +30,17 @@
  DAMAGE. 
  =========================================================================*/
 
-/* $Id: vp.h,v 1.7 2004/04/30 15:31:43 broeker Exp $ */
+/* $Id: alloc.h,v 1.1 2006/07/23 20:59:20 broeker Exp $ */
 
-/*
- *	VPATH assumptions:
- *		VPATH is the environment variable containing the view path 
- *		where each path name is followed by ':', '\n', or '\0'.
- *		Embedded blanks are considered part of the path.
- */
+#ifndef CSCOPE_ALLOC_H
+#define CSCOPE_ALLOC_H
 
-#ifndef CSCOPE_VP_H
-#define CSCOPE_VP_H
+#include <string.h>  /* need size_t ... */
 
-#define MAXPATH	200		/* max length for entire name */
+/* memory allocation support */
+void	*mycalloc(size_t nelem, size_t size);
+void	*mymalloc(size_t size);
+void	*myrealloc(void *p, size_t size);
+char	*my_strdup(char *s);
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#else
-# define HAVE_FCNTL_H 1		/* in case of doubt, assume it's there */
-#endif
-#ifdef HAVE_FCNTL_H
-# include <fcntl.h>		/* needed for O_... open flags */
-#endif
-
-#include <sys/types.h>
-#include <sys/stat.h>
-
-#if !NOMALLOC
-extern	char	**vpdirs;	/* directories (including current) in view path */
-#else
-#define	MAXDIR	25		/* same as libVP */
-#define	DIRLEN	80		/* same as libVP */
-extern	char	vpdirs[MAXDIR][DIRLEN + 1];
-#endif
-extern	int	vpndirs;	/* number of directories in view path */
-
-void	vpinit(char *current_dir);
-int	vpopen(char *path, int oflag);
-int	vpaccess(char *path, mode_t amode);
-
-#endif /* CSCOPE_VP_H */
+#endif /* CSCOPE_ALLOC_H */
